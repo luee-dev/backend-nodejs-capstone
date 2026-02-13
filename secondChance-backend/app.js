@@ -1,4 +1,3 @@
-/*jshint esversion: 8 */
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -22,32 +21,33 @@ connectToDatabase().then(() => {
 app.use(express.json());
 
 // Route files
+const authRoutes = require('./routes/authRoutes');
 
-// authRoutes Step 2: import the authRoutes and store in a constant called authRoutes
-//{{insert code here}}
-
-// Items API Task 1: import the secondChanceItemsRoutes and store in a constant called secondChanceItemsRoutes
-//{{insert code here}}
+// Gift API Task 1: import the giftRoutes and store in a constant called giftroutes
+const giftRoutes = require('./routes/giftRoutes');
 
 // Search API Task 1: import the searchRoutes and store in a constant called searchRoutes
-//{{insert code here}}
-
+const searchRoutes = require('./routes/searchRoutes');
 
 const pinoHttp = require('pino-http');
 const logger = require('./logger');
 
 app.use(pinoHttp({ logger }));
 
-// Use Routes
-// authRoutes Step 2: add the authRoutes and to the server by using the app.use() method.
-//{{insert code here}}
 
-// Items API Task 2: add the secondChanceItemsRoutes to the server by using the app.use() method.
-//{{insert code here}}
+// Use Routes
+app.use('/api/auth', authRoutes);
+
+// Gift API Task 2: add the giftRoutes to the server by using the app.use() method.
+app.use('/api/gifts', giftRoutes);
 
 // Search API Task 2: add the searchRoutes to the server by using the app.use() method.
-//{{insert code here}}
+app.use('/api/search', searchRoutes);
 
+// Default Route for React App
+app.get('/app/*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'react-app', 'index.html'));
+});
 
 // Global Error Handler
 app.use((err, req, res, next) => {
@@ -56,8 +56,8 @@ app.use((err, req, res, next) => {
 });
 
 app.get("/",(req,res)=>{
-    res.send("Inside the server")
-})
+    res.send("Inside the server");
+});
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
